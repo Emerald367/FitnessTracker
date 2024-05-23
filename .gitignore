@@ -1,2 +1,9 @@
 node_modules
 .env
+fitness-tracker/public/favicon.ico
+fitness-tracker/public/logo192.png
+fitness-tracker/public/logo512.png
+fitness-tracker/public/robots.txt
+fitness-tracker/package-lock.json
+fitness-tracker/src/logo.svg
+fitness-tracker/README.md
