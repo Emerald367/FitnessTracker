@@ -4,6 +4,7 @@ import axios from 'axios';
 const WorkoutPlanForm = () => {
     const [planName, setPlanName] = useState('');
     const [exercises, setExercises] = useState([{ name: '', duration: '' }]);
+    const [error, setError] = useState(null);
 
     const handleExerciseChange = (index, event) => {
         const newExercises = exercises.map((exercise, exerciseIndex) => {
@@ -30,10 +31,16 @@ const WorkoutPlanForm = () => {
         };
 
         try {
-            const response = await axios.post('http://localhost:6000/workout-plan', payload);
+            const response = await axios.post('http://localhost:5000/workout-plan', payload);
             console.log(response.data);
         } catch (error) {
-            console.error('Error creating workout plan', error);
+            if (error.response) {
+              console.error('Error creating workout plan', error.response.data);
+              setError('Error creating workout plan: ' + error.response.data.error);
+            } else {
+              console.error('Error creating workout plan', error.message);
+              setError('Error creating workout plan' + error.message);
+            }
         }
     };
 
@@ -58,6 +65,13 @@ const WorkoutPlanForm = () => {
             {/* Main Content */}
             <div className="w-3/4 p-6">
                 <div className="container mx-auto p-6 bg-white shadow-md rounded-lg">
+                  {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+                      <strong className="font-bold">Error: </strong>
+                      <span className="block sm:inline">{error}</span>
+                      <span className="absolute top-0 bottom-0 right-0 px-4 py-3" onClick={() => setError(null)}>
+                          <svg className="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title>< path d="M14.348 5.652a.5.5 0 1 0-.707-.707L10 8.586 6.36 4.945a.5.5 0 1 0-.707.707l3.646 3.646-3.646 3.646a.5.5 0 0 0 .707.707L10 10.414l3.64 3.64a.5.5 0 0 0 .707-.707L10.707 10l3.641-3.641z"/></svg>
+                      </span>
+                    </div>}
                     <form onSubmit={handleSubmit}>
                         <div className="mb-6">
                             <label className="block text-indigo-700 text-lg font-semibold mb-2" htmlFor="planName">
@@ -70,6 +84,7 @@ const WorkoutPlanForm = () => {
                                 placeholder="Enter workout plan name"
                                 value={planName}
                                 onChange={(e) => setPlanName(e.target.value)}
+                                required
                             />
                         </div>
 
@@ -95,6 +110,7 @@ const WorkoutPlanForm = () => {
                                     placeholder="Exercise name"
                                     value={exercise.name}
                                     onChange={(e) => handleExerciseChange(index, e)}
+                                    required
                                 />
                                 <input
                                     className="shadow appearance-none border rounded w-full py-3 px-4 text-indigo-700 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -104,6 +120,7 @@ const WorkoutPlanForm = () => {
                                     placeholder="Duration"
                                     value={exercise.duration}
                                     onChange={(e) => handleExerciseChange(index, e)}
+                                    required
                                 />
                             </div>
                         ))}

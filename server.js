@@ -1,9 +1,13 @@
 const express = require('express');
 const app = express();
 app.use(express.json());
+const cors = require('cors');
+app.use(cors({
+   origin: 'http://localhost:3000',
+}));
 const env = require('dotenv').config;
 const supabase = require('./db.js')
-const PORT = 6000;
+const PORT = 5000;
 
 app.post('/workout-plan', async(req, res) => {
       const planName = req.body.planName;
@@ -173,6 +177,6 @@ app.post('/workout-history', async (req, res) => {
 
 
 
-app.listen(6000, () => console.log(`Server has started on port: ${PORT}`));
+app.listen(5000, () => console.log(`Server has started on port: ${PORT}`));
 
 module.exports = app;

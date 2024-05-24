@@ -1,14 +1,18 @@
 ###
 
-POST http://localhost:6000/workout-plan
+POST http://localhost:5000/workout-plan
 Content-type: application/json
 
 {
-    "planName": "Running",
+    "planName": "Marathon3",
     "exercises": [
         {
-            "name": "Marathon",
-            "duration": "Three Hours"
+            "name": "Running",
+            "duration": "30 minutes"
+        },
+        {
+            "name": "Yapping",
+            "duration": "100 Yodels"
         }
     ]
 }
