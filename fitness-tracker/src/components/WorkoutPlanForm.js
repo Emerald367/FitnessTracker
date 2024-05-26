@@ -55,25 +55,9 @@ const WorkoutPlanForm = () => {
     };
 
     return (
-        <div className="flex min-h-screen bg-gray-50">
-            {/* Sidebar */}
-            <div className="w-1/4 bg-indigo-600 text-white p-6">
-                <h2 className="text-2xl font-bold mb-4">Contents</h2>
-                <ul>
-                    <li className="mb-2"><button className="text-indigo-200 hover:text-white focus:outline-none" onClick={() => alert('Create New Workout Plan clicked')}>
-                    Create New Workout Plan
-                </button></li>
-                    <li className="mb-2"><button className="text-indigo-200 hover:text-white focus:outline-none" onClick={() => alert('Edit Current Workout Plans clicked')}>
-                    Manage Current Workout Plans
-                </button></li>
-                    <li className="mb-2"> <button className="text-indigo-200 hover:text-white focus:outline-none" onClick={() => alert('Workout History clicked')}>
-                    Workout History
-                </button></li>
-                </ul>
-            </div>
-
+        <div className="flex flex-col min-h-screen bg-gray-50">
             {/* Main Content */}
-            <div className="w-3/4 p-6">
+            <div className="flex-grow p-6">
                 <div className="container mx-auto p-6 bg-white shadow-md rounded-lg">
                   {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
                       <strong className="font-bold">Error: </strong>
