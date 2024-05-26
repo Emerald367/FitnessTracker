@@ -64,7 +64,7 @@ const WorkoutPlanForm = () => {
                     Create New Workout Plan
                 </button></li>
                     <li className="mb-2"><button className="text-indigo-200 hover:text-white focus:outline-none" onClick={() => alert('Edit Current Workout Plans clicked')}>
-                    Edit Current Workout Plans
+                    Manage Current Workout Plans
                 </button></li>
                     <li className="mb-2"> <button className="text-indigo-200 hover:text-white focus:outline-none" onClick={() => alert('Workout History clicked')}>
                     Workout History

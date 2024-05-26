@@ -80,6 +80,53 @@ app.post('/workout-plan', async(req, res) => {
 
 });
 
+app.get('/workout-plan/:id', async(req, res) => {
+   const planID = req.params.id;
+
+   try {
+      const { data: planData, error: planError } = await supabase
+        .from('workoutplan')
+        .select('planname')
+        .eq('planid', planID)
+        .single();
+
+
+      if (planError) {
+         console.error('Plan retrieval error', planError);
+         res.status(500).json({error: 'Failed to retrieve workout plan '});
+         return;
+      }
+
+      if (!planData) {
+         res.status(404).json({ error: 'Workout plan not found' });
+         return;
+      }
+
+      //Retrieve the exercises associated with the workout plan
+      const { data: exercisesData, error: exercisesError } = await supabase
+          .from('workoutplanexercises')
+          .select('exerciseid(exercisename, duration)')
+          .eq('planid', planID);
+
+      if (exercisesError) {
+         console.error('Exercises retrieval error:', exercisesError);
+         res.status(500).json({error: 'Failed to retrieve exercises for workout plan' });
+         return;
+      }
+
+      //Construct response payload
+      const response = {
+         planName: planData.planname,
+         exercises: exercisesData.map(e => e.exerciseid)
+      };
+
+      res.json(response);
+   } catch (error) {
+      console.error('Unexpected error:', error);
+      res.status(500).json({ error: 'Unexpected server error' });
+   }
+})
+
 
 app.post('/workout-history', async (req, res) => {
    const { completedPlanName, workoutDate } = req.body;
