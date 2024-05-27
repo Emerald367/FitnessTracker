@@ -80,33 +80,32 @@ app.post('/workout-plan', async(req, res) => {
 
 });
 
-app.get('/workout-plan/:id', async(req, res) => {
-   const planID = req.params.id;
+app.get('/workout-plan/:planname', async(req, res) => {
+   const planName = req.params.planname;
 
    try {
+      //Retrieve workout plan by name
       const { data: planData, error: planError } = await supabase
         .from('workoutplan')
-        .select('planname')
-        .eq('planid', planID)
+        .select('planid')
+        .eq('planname', planName)
         .single();
 
 
       if (planError) {
          console.error('Plan retrieval error', planError);
-         res.status(500).json({error: 'Failed to retrieve workout plan '});
-         return;
+         return res.status(500).json({error: 'Failed to retrieve workout plan '});
       }
 
       if (!planData) {
-         res.status(404).json({ error: 'Workout plan not found' });
-         return;
+        return res.status(404).json({ error: 'Workout plan not found' });
       }
 
       //Retrieve the exercises associated with the workout plan
       const { data: exercisesData, error: exercisesError } = await supabase
           .from('workoutplanexercises')
           .select('exerciseid(exercisename, duration)')
-          .eq('planid', planID);
+          .eq('planid', planData.planid);
 
       if (exercisesError) {
          console.error('Exercises retrieval error:', exercisesError);
@@ -116,8 +115,11 @@ app.get('/workout-plan/:id', async(req, res) => {
 
       //Construct response payload
       const response = {
-         planName: planData.planname,
-         exercises: exercisesData.map(e => e.exerciseid)
+         planName: planName,
+         exercises: exercisesData.map(e => ({
+            name: e.exerciseid.exercisename,
+            duration: e.exerciseid.duration
+         }))
       };
 
       res.json(response);
@@ -125,7 +127,7 @@ app.get('/workout-plan/:id', async(req, res) => {
       console.error('Unexpected error:', error);
       res.status(500).json({ error: 'Unexpected server error' });
    }
-})
+});
 
 
 app.post('/workout-history', async (req, res) => {

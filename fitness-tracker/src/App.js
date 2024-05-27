@@ -4,7 +4,7 @@ import WorkoutPlanForm from './components/WorkoutPlanForm';
 import ManageWorkoutPlans from './components/ManageWorkoutPlans';
 import WorkoutHistory from './components/WorkoutHistory';
 import './App.css';
-import './index.css'
+import './index.css';
 
 function App() {
   return (
@@ -15,17 +15,17 @@ function App() {
           <h2 className="text-2xl font-bold mb-4">Contents</h2>
           <ul>
             <li className="mb-2">
-              <Link className="text-indigo-200 hover:text-white" to="/create-workout">
+              <Link className="text-indigo-200 hover:text-white focus:outline-none" to="/create-workout">
                 Create New Workout Plan
               </Link>
             </li>
             <li className="mb-2">
-              <Link className="text-indigo-200 hover:text-white" to="/manage-workouts">
+              <Link className="text-indigo-200 hover:text-white focus:outline-none" to="/manage-workouts">
                 Manage Current Workout Plans
               </Link>
             </li>
             <li className="mb-2">
-              <Link className="text-indigo-200 hover:text-white" to="/workout-history">
+              <Link className="text-indigo-200 hover:text-white focus:outline-none" to="/workout-history">
                 Workout History
               </Link>
             </li>
@@ -36,9 +36,11 @@ function App() {
     {/* Main Content */}
     <div className="w-3/4 p-6">
       <Routes>
+        <Route path="/" element={<div>Welcome to the Fitness Tracker. Select 'Create a New Workout Plan' to get started!</div>} />
         <Route path="/create-workout" element={<WorkoutPlanForm/>} />
-        <Route path="/manage-workouts" component={<ManageWorkoutPlans />} />
-        <Route path="/workout-history" component={<WorkoutHistory />} />
+        <Route path="/manage-workouts" element={<ManageWorkoutPlans/>} />
+        <Route path="/manage-workouts/:planname" element={<ManageWorkoutPlans/>} />
+        <Route path="/workout-history" element={<WorkoutHistory/>} />
       </Routes>
     </div>
   </div>
