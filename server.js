@@ -129,6 +129,79 @@ app.get('/workout-plan/:planname', async(req, res) => {
    }
 });
 
+app.put('/workout-plan/:planname', async (req, res) => {
+    const oldPlanName = req.params.planname;
+    const { newPlanName, exercises } = req.body;
+
+    try {
+       const { data: planData, error: planError } = await supabase
+           .from('workoutplan')
+           .select('planid')
+           .eq('planname', oldPlanName)
+           .single();
+
+       if (planError) {
+          console.error('Plan retrieval error', planError);
+          return res.status(500).json({ error: 'Failed to retrieve workout plan' });
+       }
+
+       if (!planData) {
+          return res.status(404).json({ error: 'Workout plan not found '});
+       }
+
+       const planID = planData.planid;
+
+       if (newPlanName) {
+          const { error: updatePlanError } = await supabase
+              .from('workoutplan')
+              .update({planname: newPlanName })
+              .eq('planid', planID);
+
+         if (updatePlanError) {
+            console.error('Plan name update error', updatePlanError);
+            return res.status(500).json({ error: 'Failed to update workout plan name'});
+
+         }
+       }
+
+       //Ensure exercises is an array and contains valid objects
+       if (!Array.isArray(exercises)) {
+         return res.status(400).json({ error: 'Invalid exercises format' });
+       }
+
+       const updates = exercises.map( async (exercise) => {
+
+         if (!exercise || typeof exercise !== 'object' || !exercise.exerciseid) {
+            console.error('Invalid exercise data', exercise);
+            throw new Error('Invalid exercise data');
+         }
+
+         const  { error } = await supabase
+             .from('exercise')
+             .update({
+                 exercisename: exercise.name,
+                 duration: exercise.duration
+             })
+             .eq('exerciseid', exercise.exerciseid);
+
+             if (error) {
+               console.error(`Error updating exercise ID ${exercise.exerciseid}`, error);
+               throw new Error(`Failed to update exercise ID ${exercise.exerciseid}`);
+             }
+       });
+
+       await Promise.all(updates);
+
+       res.json({ message: 'Workout plan updated successfully' })
+    } catch (error) {
+      console.error('Unexpected error:', error);
+      res.status(500).json({error: 'Unexpected server error' })
+    }
+});
+
+app.patch('/workout-plan', async (req, res) => {
+
+})
 
 app.post('/workout-history', async (req, res) => {
    const { completedPlanName, workoutDate } = req.body;
