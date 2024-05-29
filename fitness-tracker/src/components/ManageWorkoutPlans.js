@@ -31,6 +31,24 @@ const ManageWorkoutPlans = () => {
         }
     };
 
+    const handleExerciseChange = (index,field, value) => {
+        const updatedExercises = [...exercises];
+        updatedExercises[index][field] = value;
+        setExercises(updatedExercises);
+    };
+
+     const handleSavePlan = async () => {
+        try {
+            await axios.put(`http://localhost:5000/workout-plan/${planName}`, {
+                exercises
+            });
+            alert('Workout plan updated successfully');
+        } catch (error) {
+            console.error('Error updating workout plan:', error);
+            setError('Failed to update workout plan');
+        }
+     }
+
 
     const renderContent = () => {
         if (loading) {
@@ -77,7 +95,7 @@ const ManageWorkoutPlans = () => {
                         id={`exercise-name-${index}`}
                         type="text"
                         value={exercise.name}
-                        readOnly
+                        onChange={(e) => handleExerciseChange(index, 'name', e.target.value)}
                     />
                     <div className="flex justify-between items-center mb-2">
                         <label className="block text-indigo-700 text-lg font-semibold" htmlFor={`exercise-duration-${index}`}>
@@ -89,10 +107,17 @@ const ManageWorkoutPlans = () => {
                         id={`exercise-duration-${index}`}
                         type="text"
                         value={exercise.duration}
-                        readOnly
+                        onChange={(e) => handleExerciseChange(index, 'duration', e.target.value)}
                     />
                 </div>
             ))}
+
+            <button
+                className="bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                onClick={handleSavePlan}
+            >
+                Save Workout Plan
+            </button>
         </div>
     );
 };
@@ -123,7 +148,7 @@ return (
             {renderContent()}
         </div>
     </div>
-);
+   );
 };
 
 export default ManageWorkoutPlans;
