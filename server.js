@@ -134,6 +134,7 @@ app.put('/workout-plan/:planname', async (req, res) => {
     const { newPlanName, exercises } = req.body;
 
     try {
+       //Fetch the workout plan ID based on the old plan name
        const { data: planData, error: planError } = await supabase
            .from('workoutplan')
            .select('planid')
@@ -151,6 +152,7 @@ app.put('/workout-plan/:planname', async (req, res) => {
 
        const planID = planData.planid;
 
+       //Update plan name is new one is provided
        if (newPlanName) {
           const { error: updatePlanError } = await supabase
               .from('workoutplan')
