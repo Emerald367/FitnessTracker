@@ -80,52 +80,57 @@ app.post('/workout-plan', async(req, res) => {
 
 });
 
-app.get('/workout-plan/:planname', async(req, res) => {
+app.get('/workout-plan/:planname', async (req, res) => {
    const planName = req.params.planname;
 
    try {
-      //Retrieve workout plan by name
-      const { data: planData, error: planError } = await supabase
-        .from('workoutplan')
-        .select('planid')
-        .eq('planname', planName)
-        .single();
+       // Retrieve workout plan by name
+       const { data: planData, error: planError } = await supabase
+           .from('workoutplan')
+           .select('planid')
+           .eq('planname', planName)
+           .single();
 
+       if (planError) {
+           console.error('Plan retrieval error', planError);
+           return res.status(500).json({ error: 'Failed to retrieve workout plan' });
+       }
 
-      if (planError) {
-         console.error('Plan retrieval error', planError);
-         return res.status(500).json({error: 'Failed to retrieve workout plan '});
-      }
+       if (!planData) {
+           return res.status(404).json({ error: 'Workout plan not found' });
+       }
 
-      if (!planData) {
-        return res.status(404).json({ error: 'Workout plan not found' });
-      }
+       // Retrieve the exercises associated with the workout plan
+       const { data: exercisesData, error: exercisesError } = await supabase
+           .from('workoutplanexercises')
+           .select(`
+               exerciseid,
+               exercise:exerciseid (
+                   exercisename,
+                   duration
+               )
+           `)
+           .eq('planid', planData.planid);
 
-      //Retrieve the exercises associated with the workout plan
-      const { data: exercisesData, error: exercisesError } = await supabase
-          .from('workoutplanexercises')
-          .select('exerciseid(exercisename, duration)')
-          .eq('planid', planData.planid);
+       if (exercisesError) {
+           console.error('Exercises retrieval error:', exercisesError);
+           return res.status(500).json({ error: 'Failed to retrieve exercises for workout plan' });
+       }
 
-      if (exercisesError) {
-         console.error('Exercises retrieval error:', exercisesError);
-         res.status(500).json({error: 'Failed to retrieve exercises for workout plan' });
-         return;
-      }
+       // Construct response payload
+       const response = {
+           planName: planName,
+           exercises: exercisesData.map(e => ({
+               exerciseid: e.exerciseid,
+               name: e.exercise.exercisename,
+               duration: e.exercise.duration
+           }))
+       };
 
-      //Construct response payload
-      const response = {
-         planName: planName,
-         exercises: exercisesData.map(e => ({
-            name: e.exerciseid.exercisename,
-            duration: e.exerciseid.duration
-         }))
-      };
-
-      res.json(response);
+       res.json(response);
    } catch (error) {
-      console.error('Unexpected error:', error);
-      res.status(500).json({ error: 'Unexpected server error' });
+       console.error('Unexpected error:', error);
+       res.status(500).json({ error: 'Unexpected server error' });
    }
 });
 
