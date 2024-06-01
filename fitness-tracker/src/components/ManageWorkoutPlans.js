@@ -4,6 +4,7 @@ import axios from 'axios';
 const ManageWorkoutPlans = () => {
     const [inputPlanName, setInputPlanName] = useState('');
     const [planName, setPlanName] = useState('');
+    const [newPlanName, setNewPlanName] = useState('');
     const [exercises, setExercises] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -21,7 +22,9 @@ const ManageWorkoutPlans = () => {
         setLoading(true);
         try {
             const response = await axios.get(`http://localhost:5000/workout-plan/${inputPlanName}`)
+            console.log('Fetched plan data:', response.data);
             setPlanName(response.data.planName);
+            setNewPlanName(response.data.planName);
             setExercises(response.data.exercises);
             setLoading(false);
         } catch (error) {
@@ -31,7 +34,7 @@ const ManageWorkoutPlans = () => {
         }
     };
 
-    const handleExerciseChange = (index,field, value) => {
+    const handleExerciseChange = (index, field, value) => {
         const updatedExercises = [...exercises];
         updatedExercises[index][field] = value;
         setExercises(updatedExercises);
@@ -39,15 +42,25 @@ const ManageWorkoutPlans = () => {
 
      const handleSavePlan = async () => {
         try {
-            await axios.put(`http://localhost:5000/workout-plan/${planName}`, {
-                exercises
+            const updatedExercises = exercises.map((exercise) => ({
+                exerciseid: exercise.exerciseid,
+                name: exercise.name,
+                duration: exercise.duration,
+            }));
+            console.log('Payload:', {
+                newPlanName,
+                exercises: updatedExercises,
             });
-            alert('Workout plan updated successfully');
+            await axios.put(`http://localhost:5000/workout-plan/${planName}`, {
+                newPlanName,
+                exercises: updatedExercises,
+            });
+            alert('Workout plan updated successfully')
         } catch (error) {
-            console.error('Error updating workout plan:', error);
+            console.error('Error updating workout plan:', error.response ? error.response.data : error.message);
             setError('Failed to update workout plan');
         }
-     }
+     };
 
 
     const renderContent = () => {
@@ -65,7 +78,7 @@ const ManageWorkoutPlans = () => {
         }
 
         if (!planName) {
-            return <div>Enter a workout plan name to acquire your workout plan.</div>;
+            return <div>Enter your plan name to acquire your workout plan.</div>;
         }
 
         return (
@@ -78,8 +91,8 @@ const ManageWorkoutPlans = () => {
                         className="shadow appearance-none border rounded w-full py-3 px-4 text-indigo-700 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         id="planName"
                         type="text"
-                        value={planName}
-                        readOnly
+                        value={newPlanName}
+                        onChange={(e) => setNewPlanName(e.target.value)}
                     />
                 </div>
 
