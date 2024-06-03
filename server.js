@@ -206,9 +206,56 @@ app.put('/workout-plan/:planname', async (req, res) => {
     }
 });
 
-app.patch('/workout-plan', async (req, res) => {
+app.delete('/workout-plan/:planname', async (req, res) => {
+   const planName = req.params.planname;
+   try {
+      const { data: planData, error: planFetchError } = await supabase
+        .from('workoutplan')
+        .select('planid')
+        .eq('planname', planName)
+        .single();
 
-})
+        if (planFetchError) {
+           console.error('Error fetching plan:', planFetchError);
+           res.status(500).json({error: 'Failed to fetch workout plan'});
+           return;
+        }
+
+        if (!planData) {
+           res.status(404).json({ error: 'Workout plan not found' });
+           return;
+        }
+
+        const planID = planData.planid
+
+        const { error: wpeDeleteError } = await supabase
+          .from('workoutplanexercises')
+          .delete()
+          .eq('planid', planID);
+
+         if (wpeDeleteError) {
+            console.error('Error deleting workout plan exercises:', wpeDeleteError);
+            res.status(500).json({ error: 'Failed to delete workout plan exercises' });
+            return;
+         }
+
+         const { error: planDeleteError } = await supabase
+           .from('workoutplan')
+           .delete()
+           .eq('planid', planID);
+
+         if (planDeleteError) {
+            console.error('Error deleting workout plan:', planDeleteError);
+            res.status(500).json( { error: 'Failed to delete workout plan' });
+            return;
+         }
+
+         res.json({ message: 'Workout plan deleted successfully' });
+   } catch (error) {
+      console.error('Unexpected error:', error);
+      res.status(500).json({ error: 'Unexpected server error' });
+   }
+});
 
 app.post('/workout-history', async (req, res) => {
    const { completedPlanName, workoutDate } = req.body;
