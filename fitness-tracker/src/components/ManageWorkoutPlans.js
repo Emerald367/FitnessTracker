@@ -8,6 +8,7 @@ const ManageWorkoutPlans = () => {
     const [exercises, setExercises] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
     const handleInputChange = (e) => {
         setInputPlanName(e.target.value);
@@ -61,6 +62,21 @@ const ManageWorkoutPlans = () => {
             setError('Failed to update workout plan');
         }
      };
+
+     const handleDeletePlan = async () => {
+        try {
+            await axios.delete(`http://localhost:5000/workout-plan/${planName}`);
+            alert('Workout plan deleted successfully');
+            setPlanName('');
+            setNewPlanName('');
+            setExercises([]);
+            setShowDeleteConfirm(false);
+        } catch (error) {
+            console.error('Error deleting workout plan:', error);
+            setError('Failed to delete workout plan');
+        }
+     };
+
 
 
     const renderContent = () => {
@@ -131,6 +147,31 @@ const ManageWorkoutPlans = () => {
             >
                 Save Workout Plan
             </button>
+
+            <button
+                className="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 ml-4"
+                onClick={() => setShowDeleteConfirm(true)}
+            >
+                Delete Workout Plan
+            </button>
+
+            {showDeleteConfirm && (
+                <div className="mt-4 p-4 border border-red-600 bg-red-100 rounded-lg">
+                    <p>Are your sure you want to delete this workout plan?</p>
+                    <button
+                         className="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 mr-2"
+                         onClick={handleDeletePlan}
+                    >
+                        Yes, delete it
+                    </button>
+                    <button
+                        className="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                        onClick={() => setShowDeleteConfirm(false)}
+                    >
+                        No, keep it
+                    </button>
+                </div>
+            )}
         </div>
     );
 };
