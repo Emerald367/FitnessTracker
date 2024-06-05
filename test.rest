@@ -19,7 +19,7 @@ Content-type: application/json
 
 ###
 
-GET http://localhost:5000/workout-plan/Rapping
+GET http://localhost:5000/workout-plan/Calisthenics1
 
 
 ###
@@ -37,8 +37,8 @@ Content-type: application/json
         },
         {
             "exerciseid": 20,
-            "name": "Front Lever",
-            "duration": "Five 15 Second Holds"
+            "name": "Back Lever",
+            "duration": "Seven 15 Second Holds"
         },
         {
             "exerciseid": 21,
@@ -47,3 +47,18 @@ Content-type: application/json
         }
     ]
 }
+
+###
+DELETE http://localhost:5000/workout-plan/Marathon3
+
+
+###
+POST http://localhost:5000/workout-history
+Content-Type: application/json
+
+{
+    "completedPlanName": "Marathon3"
+}
+
+###
+GET http://localhost:5000/workout-history
