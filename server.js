@@ -260,16 +260,33 @@ app.delete('/workout-plan/:planname', async (req, res) => {
 app.post('/workout-history', async (req, res) => {
    const { completedPlanName, workoutDate } = req.body;
 
-   if (!completedPlanName || !workoutDate) {
-      res.status(400).json({ error: 'Invalid request payload'});
+   if (!completedPlanName) {
+      res.status(400).json({ error: 'Invalid request payload: completedPlanName is required'});
       return;
    }
 
    try {
+
+      const { data: planData, error: planError } = await supabase
+         .from('workoutplan')
+         .select('planname')
+         .eq('planname', completedPlanName)
+         .single();
+
+       if (planError || !planData) {
+         res.status(400).json({ error: 'Invalid plan name' });
+         return;
+       }
+
+      const insertPayload = { completedplanname: completedPlanName };
+
+      if (workoutDate) {
+         insertPayload.workoutdate = workoutDate;
+      }
       
       const {data, error} = await supabase
       .from('workouthistory')
-      .insert([{completedplanname: completedPlanName, workoutdate: workoutDate}])
+      .insert([insertPayload])
       .single();
 
       if (error) {
@@ -278,7 +295,7 @@ app.post('/workout-history', async (req, res) => {
          return;
       }
 
-      res.json({ message: 'Workout history recorded successfully' });
+      res.json({ message: 'Workout plan completed and added to History' });
 
 
 
