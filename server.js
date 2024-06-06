@@ -307,6 +307,25 @@ app.post('/workout-history', async (req, res) => {
 
 });
 
+app.get('/workout-history', async (req, res) => {
+   try {
+      const { data: workoutHistory, error } = await supabase
+        .from('workouthistory')
+        .select('*');
+
+      if (error) {
+         console.error('Error fetching workout history', error);
+         res.status(500).json({ error : 'Failed to fetch workout history'  });
+         return;
+      }
+
+      res.json(workoutHistory);
+   } catch (error) {
+      console.error('Unexpected error:', error);
+      res.status(500).json({ error: 'Unexpected server error' });
+   }
+});
+
 
 
 
