@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import WorkoutHistoryCard from './WorkoutHistory';
 
 const ManageWorkoutPlans = () => {
     const [inputPlanName, setInputPlanName] = useState('');
@@ -9,6 +10,7 @@ const ManageWorkoutPlans = () => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [workoutHistory, setWorkoutHistory] = useState([]);
 
     const handleInputChange = (e) => {
         setInputPlanName(e.target.value);
@@ -74,6 +76,21 @@ const ManageWorkoutPlans = () => {
         } catch (error) {
             console.error('Error deleting workout plan:', error);
             setError('Failed to delete workout plan');
+        }
+     };
+
+     const handleFinishPlan = async () => {
+        const workoutDate = new Date().toISOString().split('T')[0];
+        try {
+            const response = await axios.post('http://localhost:5000/workout-history', {
+                completedPlanName: planName,
+                workoutDate,
+            });
+            alert('Congratulations! Workout plan completed');
+            setWorkoutHistory([...workoutHistory, { completedPlanName: planName, workoutDate }])
+        } catch (error) {
+            console.error('Error finishing workout plan:', error);
+            setError('Failed to finish workout plan');
         }
      };
 
@@ -155,6 +172,12 @@ const ManageWorkoutPlans = () => {
                 Delete Workout Plan
             </button>
 
+            <button
+              className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 ml-4"
+              onClick={handleFinishPlan}
+             >
+                Finish Plan
+             </button>
             {showDeleteConfirm && (
                 <div className="mt-4 p-4 border border-red-600 bg-red-100 rounded-lg">
                     <p>Are your sure you want to delete this workout plan?</p>
@@ -200,6 +223,11 @@ return (
                 </button>
             </div>
             {renderContent()}
+            <div>
+                {workoutHistory.map((history, index) => (
+                    <WorkoutHistoryCard key={index} planName={history.completedPlanName} workoutDate={history.workoutDate} />
+                ))}
+            </div>
         </div>
     </div>
    );
