@@ -319,7 +319,10 @@ app.get('/workout-history', async (req, res) => {
          return;
       }
 
-      res.json(workoutHistory);
+      const filteredData = workoutHistory.filter(history => history.workoutdate !== null);
+      console.log('Filtered Workout History Data:', filteredData);
+
+      res.json(filteredData);
    } catch (error) {
       console.error('Unexpected error:', error);
       res.status(500).json({ error: 'Unexpected server error' });
