@@ -258,7 +258,7 @@ app.delete('/workout-plan/:planname', async (req, res) => {
 });
 
 app.post('/workout-history', async (req, res) => {
-   const { completedPlanName, workoutDate } = req.body;
+   const { completedPlanName, workoutDate, exercises } = req.body;
 
    if (!completedPlanName) {
       res.status(400).json({ error: 'Invalid request payload: completedPlanName is required'});
@@ -278,11 +278,13 @@ app.post('/workout-history', async (req, res) => {
          return;
        }
 
-      const insertPayload = { completedplanname: completedPlanName };
+       if (!Array.isArray(exercises)) {
+         res.status(400).json({ error: 'Invalid request payload: exercises should be an array'});
+       }
 
-      if (workoutDate) {
-         insertPayload.workoutdate = workoutDate;
-      }
+      const insertPayload = { completedplanname: completedPlanName, workoutdate: workoutDate || new Date().toISOString().split('T')[0], exercises: exercises
+       };
+
       
       const {data, error} = await supabase
       .from('workouthistory')
