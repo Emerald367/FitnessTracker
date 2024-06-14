@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { format, parseISO } from 'date-fns';
 import { FaDumbbell, FaClock } from 'react-icons/fa';
-import './app.css';
+import '../app.css';
 
 const WorkoutHistory = () => {
     const [workoutHistory, setWorkoutHistory] = useState([]);
