@@ -1,10 +1,27 @@
 import React from 'react'
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Link, useNavigate } from 'react-router-dom';
 import WorkoutPlanForm from './components/WorkoutPlanForm';
 import ManageWorkoutPlans from './components/ManageWorkoutPlans';
 import WorkoutHistory from './components/WorkoutHistory';
 import './App.css';
 import './index.css';
+
+const HomePage = () => {
+  const navigate = useNavigate();
+
+  return (
+    <div className="flex flex-col items-center justify-center w-full h-full bg-blue-600 text-white p-6">
+    <h1 className="text-5xl font-bold mb-4">Welcome to the Fitness Tracker</h1>
+    <p className="text-2xl mb-8">Select 'Create a New Workout Plan' to get started!</p>
+    <button
+      className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-full transition duration-300"
+      onClick={() => navigate('/create-workout')}
+    >
+      Create a New Workout Plan
+    </button>
+  </div>
+  );
+};
 
 function App() {
   return (
@@ -36,7 +53,7 @@ function App() {
     {/* Main Content */}
     <div className="w-3/4 p-6">
       <Routes>
-        <Route path="/" element={<div>Welcome to the Fitness Tracker. Select 'Create a New Workout Plan' to get started!</div>} />
+        <Route path="/" element={<HomePage/>} />
         <Route path="/create-workout" element={<WorkoutPlanForm/>} />
         <Route path="/manage-workouts" element={<ManageWorkoutPlans/>} />
         <Route path="/manage-workouts/:planname" element={<ManageWorkoutPlans/>} />
