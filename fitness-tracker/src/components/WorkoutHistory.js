@@ -21,6 +21,7 @@ const WorkoutHistory = () => {
             } catch (error) {
                 console.error('Error fetching workout history:', error);
                 setError('Failed to load workout history');
+            } finally {
                 setLoading(false);
             }
         };
@@ -51,7 +52,7 @@ const WorkoutHistory = () => {
             <h2 className="text-3xl font-bold text-indigo-700 mb-6 text-center">Workout History</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {workoutHistory.map((history, index) => (
-                    <div key={index} className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300" onClick={() => handleCardClick(index)}>
+                    <div key={index} className={`bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 ${expandedCard === index ? 'expanded' : ''} `} onClick={() => handleCardClick(index)}>
                         <div className="mb-4">
                             <h3 className="text-xl font-semibold text-indigo-700">{history.completedplanname}</h3>
                         </div>
