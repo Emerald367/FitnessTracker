@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { format, parseISO } from 'date-fns';
 import { FaDumbbell, FaClock } from 'react-icons/fa';
-import '../app.css';
 
 const WorkoutHistory = () => {
     const [workoutHistory, setWorkoutHistory] = useState([]);
@@ -62,7 +61,7 @@ const WorkoutHistory = () => {
                             <span>{format(parseISO(history.workoutdate), 'MMMM d, yyyy')}</span>
                         </div>
                         {expandedCard === index && (
-                            <div className="mt-4">
+                            <div className="mt-4 transition-all duration-300 ease-in-out overflow-hidden bg-gray-100 p-4 rounded-lg">
                                 {(history.exercises && Array.isArray(history.exercises)) ? (
                                     history.exercises.map((exercise, i) => (
                                         <div key={i} className="mt-2 flex items-center">

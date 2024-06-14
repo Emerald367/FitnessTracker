@@ -37,8 +37,4 @@
   }
 }
 
-.expanded {
-  transition: all 0.3s ease-in-out;
-  overflow: hidden;
-  background-color: #f0f4f8;
-}
+
