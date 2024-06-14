@@ -24,7 +24,7 @@ const ManageWorkoutPlans = () => {
         setError(null);
         setLoading(true);
         try {
-            const response = await axios.get(`http://localhost:5000/workout-plan/${inputPlanName}`);
+            const response = await axios.get(`https://fitnesstracker-ezi6.onrender.com/workout-plan/${inputPlanName}`);
             console.log('Fetched plan data:', response.data);
             setPlanName(response.data.planName);
             setNewPlanName(response.data.planName);
@@ -54,7 +54,7 @@ const ManageWorkoutPlans = () => {
                 newPlanName,
                 exercises: updatedExercises,
             });
-            await axios.put(`http://localhost:5000/workout-plan/${planName}`, {
+            await axios.put(`https://fitnesstracker-ezi6.onrender.com/workout-plan/${planName}`, {
                 newPlanName,
                 exercises: updatedExercises,
             });
@@ -67,7 +67,7 @@ const ManageWorkoutPlans = () => {
 
     const handleDeletePlan = async () => {
         try {
-            await axios.delete(`http://localhost:5000/workout-plan/${planName}`);
+            await axios.delete(`https://fitnesstracker-ezi6.onrender.com/${planName}`);
             alert('Workout plan deleted successfully');
             setPlanName('');
             setNewPlanName('');
@@ -82,7 +82,7 @@ const ManageWorkoutPlans = () => {
     const handleFinishPlan = async () => {
         const workoutDate = new Date().toISOString().split('T')[0];
         try {
-            const response = await axios.post('http://localhost:5000/workout-history', {
+            const response = await axios.post('https://fitnesstracker-ezi6.onrender.com/workout-history', {
                 completedPlanName: planName,
                 workoutDate,
                 exercises

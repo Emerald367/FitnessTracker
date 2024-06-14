@@ -37,7 +37,7 @@ const WorkoutPlanForm = () => {
         };
 
         try {
-            const response = await axios.post('http://localhost:5000/workout-plan', payload);
+            const response = await axios.post('https://fitnesstracker-ezi6.onrender.com//workout-plan', payload);
             console.log(response.data);
             setSuccessMessage('Workout plan created succesfully!');
             setError(null); //Clear previous errors

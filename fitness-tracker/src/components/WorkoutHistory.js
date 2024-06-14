@@ -12,7 +12,7 @@ const WorkoutHistory = () => {
         const fetchWorkoutHistory = async () => {
             setLoading(true);
             try {
-                const response = await axios.get('http://localhost:5000/workout-history');
+                const response = await axios.get('https://fitnesstracker-ezi6.onrender.com/workout-history');
                 console.log('API Response:', response.data);
                 const filteredData = response.data.filter(history => history.workoutdate !== null);
                 setWorkoutHistory(filteredData);
