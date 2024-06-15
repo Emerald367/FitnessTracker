@@ -215,7 +215,9 @@ app.put('/workout-plan/:planname', async (req, res) => {
 });
 
 app.delete('/workout-plan/:planname', async (req, res) => {
-   const planName = req.params.planname;
+   const planName = decodeURIComponent(req.params.planname);
+   console.log(`Received request to delete workout plan: ${planName}`);
+
    try {
       const { data: planData, error: planFetchError } = await supabase
         .from('workoutplan')
@@ -235,6 +237,7 @@ app.delete('/workout-plan/:planname', async (req, res) => {
         }
 
         const planID = planData.planid
+        console.log(`Fetched plan ID: ${planID}`);
 
         const { error: wpeDeleteError } = await supabase
           .from('workoutplanexercises')
