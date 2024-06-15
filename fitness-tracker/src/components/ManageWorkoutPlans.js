@@ -67,7 +67,7 @@ const ManageWorkoutPlans = () => {
 
     const handleDeletePlan = async () => {
         try {
-            await axios.delete(`https://fitnesstracker-ezi6.onrender.com/${planName}`);
+            await axios.delete(`https://fitnesstracker-ezi6.onrender.com/workout-plan/${planName}`);
             alert('Workout plan deleted successfully');
             setPlanName('');
             setNewPlanName('');
